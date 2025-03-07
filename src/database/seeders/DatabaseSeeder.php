@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\PiglyUser;
+use App\Models\WeightLog;
+use App\Models\WeightTarget;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,6 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $this->call(PiglyUsersTableSeeder::class);
+        $this->call(WeightLogsTableSeeder::class);
+        $this->call(WeightTargetsTableSeeder::class);
     }
 }
