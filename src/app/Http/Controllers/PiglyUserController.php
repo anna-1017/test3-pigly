@@ -8,12 +8,17 @@ use App\Models\WeightLog;
 use App\Models\WeightTarget;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\Step2Request;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\GoalRequest;
+use App\Http\Requests\UpdateRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class PiglyUserController extends Controller
 {
     public function register()
     {
-        return view('register'); //登録画面を表示するだけ
+        return view('auth.register'); //登録画面を表示するだけ
     }
 
     public function storeStep1(RegisterRequest $request)
@@ -71,9 +76,83 @@ class PiglyUserController extends Controller
         return view('admin', compact('weightlogs'));
     }
 
-    public function login()
+    public function showAdminPage()
     {
-        return view('login');
+        $target_weight = auth()->user()->target_weight;
+
+        $latest_weight = auth()->user()->latest_weight;
+
+        $dates = auth()->user()->dates;
+
+        return view('admin', compact('target_weight', 'latest_weight', 'dates'));
     }
-    
+
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    public function login(LoginRequest $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if(Auth::attempt($credentials)){
+
+            return redirect()->route('weight_logs');
+        }
+    }
+
+    public function edit($weightLogId)
+    {
+        $weightLog = WeightLog::findOrFail($weightLogId);
+        return view('update', compact('weightLog'));
+    }
+
+    public function update(UpdateRequest $request, $weightLogId)
+    {
+        $weightLog = WeightLog::findOrFail($weightLogId);
+
+        $validatedData = $request->validated();
+
+        $weightLog->update($validatedData);
+
+        return redirect()->route('weight_logs');
+    }
+
+    public function targetUpdate()
+    {
+        return view('goal');
+    }
+
+    public function storeGoalSetting(GoalRequest $request)
+    {
+        $validatedData = $request->validated();
+
+        $user = auth()->user();
+        $user->target_weight = $validatedData['target_weight'];
+        $user->save();
+
+        return redirect()->route('weight_logs');
+        
+    }
+
+    public function add()
+    {
+        return view('add');
+    }
+
+    public function search(Request $request)
+    {
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+
+        $query = WeightLog::query()->filterByDate($start_date, $end_date);
+
+        $logs = $query->get();
+        $count = $logs->count();
+
+        return view('admin', compact('weight_logs', 'count', 'start_date', 'end_date'));
+    }
 }
+
+

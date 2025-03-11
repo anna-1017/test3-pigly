@@ -127,11 +127,25 @@ h1 {
     border: none;
     background-color: #ddd;
     cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    padding-top: 3px;
+    color: rgb(80, 78, 78);
 }
 
 .update-button {
     border: none;
     color: white;
-    background-image: url("../pigly.back_ground_color.jpg");
+    background-image: url("/images/pigly.back_ground_color.jpg");
     cursor: pointer;
+    font-size: 14px;
+    padding-top: 3px;
+
+}
+
+.input_error_message {
+    color: red;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
 }

@@ -17,7 +17,7 @@ class PiglyUser extends Authenticatable
         'name', 'email', 'password',
     ];
 
-    protected $hideen = [
+    protected $hidden = [
         'password', 'remember_token',
     ];
 }

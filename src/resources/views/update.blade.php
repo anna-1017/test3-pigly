@@ -1,38 +1,4 @@
-<!DOCTYPE html>
-<html lang="jp">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>情報更新</title>
 
-    <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}" />
-    <link rel="stylesheet" href="{{ asset('css/update.css) }}">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inika:wght@400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inika:wght@400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Noto+Serif+JP:wght@200..900&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header class="header">
-        <div class="header-inner">
-            <div class="header-logo">PiGLy</div>
-            <nav class="header-nav">
-                <button class="target-setting" href="">
-                    <img class="icon" src="設定の歯車アイコン素材 1.png" alt="歯車アイコン">
-                    目標体重設定
-                </button>
-                <button class="logout" href="">
-                    <img class="icon" src="ログアウト・サインアウトのアイコン素材 4.png" alt="ログアウトアイコン">
-                    ログアウト
-                </button>
-            </nav>
-        </div>
-    </header>
-    <!--ここから上はheader.blade.phpへ -->
 
     @extends('layouts.header')
 
@@ -41,30 +7,63 @@
     @endsection
 
     @section('css')
-    <link rel="stylesheet" href="{{ asset('css/update.css) }}">   @endsection
+    <link rel="stylesheet" href="{{ asset('css/update.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">   
+    @endsection
 
     @section('content')
     <main class="main-content">
         <div class="content-inner">
             <h1 class="content-header">Weight Log</h1>
-            <form class="update-form" action="" method="POST">
+            <form class="update-form" action="{{ route('weight_logs.update', ['weightLogId' => $weightLog->id]) }}" method="POST">
+                @csrf
+                @method('PUT')
+
                 <label class="label" for="date">日付</label>
-                <input class="input" type="date" id="date" name="date" value="<?php echo date('Y-m-d'); ?>" />
+                <input class="input" type="date" id="date" name="date" value="{{ $weightLog->date }}" />
+                @error('date')
+                    <span class="input_error">
+                        <p class="input_error_message">{{ $message }}</p>
+                    </span>
+                @enderror
 
                 <label class="label">体重</label>
                 <div class="input-group">
-                    <input class="input-unit" type="number" step="0.1">
+                    <input class="input-unit" type="number" step="0.1" name="weight" value="{{ $weightLog->weight }}">
                     <span class="unit">kg</span>
                 </div>
+                @error('weight')
+                    <span class="input_error">
+                        <p class="input_error_message">{{ $errors->first('weight') }}</p>
+                    </span>
+                @enderror
+
                 <label class="label">摂取カロリー</label>
                 <div class="input-group">
-                    <input class="input-unit" type="number" step="1">
+                    <input class="input-unit" type="number" step="1" name="calories" value="{{ $weightLog->calories }}">
                     <span class="unit">cal</span>
                 </div>
+                @error('calories')
+                    <span class="input_error">
+                        <p class="input_error_message">{{ $errors->first('calories') }}</p>
+                    </span>
+                @enderror
+
                 <label class="label">運動時間</label>
-                <input class="input" type="number" step="0.1">
+                <input class="input" type="number" step="0.1" name="exercise_time" value="{{ $weightLog->exercise_time }}">
+                @error('exercise_time')
+                    <span class="input_error">
+                        <p class="input_error_message">{{ $errors->first('exercise_time') }}</p>
+                    </span>
+                @enderror
+
                 <label class="label">運動内容</label>
-                <textarea class="textarea "name="exercise" id="" placeholder="運動内容を追加"></textarea>
+                <textarea class="textarea "name="exercise_content" placeholder="運動内容を追加">{{ $weightLog->exercise_content }}</textarea>
+                @error('exercise_content')
+                    <span class="input_error">
+                        <p class="input_error_message">{{ $errors->first('exercise_content') }}</p>
+                    </span>
+                @enderror
 
                 <div class="button-container">
                     <div class="button-group">
@@ -73,8 +72,8 @@
                     </div>
 
                     <div class="trash-can">
-                        <a href="">
-                            <img class="trash-can-icon"src="ゴミ箱のアイコン素材 1.png" alt="ゴミ箱の画像">
+                        <a href="{{ route('weight_logs.delete', ['weightLogId' => $weightLog->id]) }}">
+                            <img class="trash-can-icon" src="{{ asset('images/trash_can.png') }}" alt="ゴミ箱の画像">
                         </a>
                     </div>
                 </div>

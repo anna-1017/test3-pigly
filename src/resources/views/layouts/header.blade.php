@@ -23,13 +23,13 @@
             <div class="header-logo">PiGLy</div>
             <nav class="header-nav">
                 <button class="target-setting" href="">
-                    <img class="icon" src="設定の歯車アイコン素材 1.png" alt="歯車アイコン">
+                    <img class="icon" src="/images/settings.icon.png" alt="歯車アイコン">
                     目標体重設定
                 </button>
                 <form action="/logout" class="form" method="post">
                     @csrf
                     <button class="logout" href="">
-                    <img class="icon" src="ログアウト・サインアウトのアイコン素材 4.png" alt="ログアウトアイコン">
+                    <img class="icon" src="/images/login_logout.icon.png" alt="ログアウトアイコン">
                     ログアウト
                 </button>
                 </form>
