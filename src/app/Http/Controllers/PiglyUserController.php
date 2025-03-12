@@ -148,10 +148,14 @@ class PiglyUserController extends Controller
 
         $query = WeightLog::query()->filterByDate($start_date, $end_date);
 
-        $logs = $query->get();
+        $logs = $query->paginate(8);
         $count = $logs->count();
 
-        return view('admin', compact('weight_logs', 'count', 'start_date', 'end_date'));
+        $latest_weight = WeightLog::latest()->first()->weight;
+
+        $target_weight =50;
+
+        return view('admin', compact('logs', 'count', 'start_date', 'end_date', 'target_weight', 'latest_weight'));
     }
 }
 

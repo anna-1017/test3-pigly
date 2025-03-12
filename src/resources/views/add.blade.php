@@ -1,4 +1,5 @@
-@extends('layouts.no-header')
+
+ @extends('layouts.no-header')
 
 
     @section('title')

@@ -38,8 +38,7 @@ body {
 
 }
 
-.target-setting,
-.logout {
+.target-setting {
     height: 30px;
     border-radius: 5px;
     border: 1px solid gray;
@@ -50,6 +49,26 @@ body {
     align-items: center;
     justify-content: center;
     gap: 5px;
+    width: 130px;
+    font-size: 14px;
+    color: rgb(70, 68, 68);
+}
+
+.logout{
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    background-color: rgb(245, 245, 245);
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 130px;
+    font-size: 14px;
+    color: rgb(70, 68, 68);
+    
 }
 
 .target-setting:hover,
