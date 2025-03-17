@@ -18,56 +18,63 @@ class PiglyUserController extends Controller
 {
     public function register()
     {
-        return view('auth.register'); //登録画面を表示するだけ
+        return view('auth.register'); 
     }
 
     public function storeStep1(RegisterRequest $request)
     {
-        $validated = $request->validated();//バリデーション済みのデータを取得
+        $validated = $request->validated();
 
-        //ユーザーを作成、IDをセッションに保存する
         $user = PiglyUser::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
         ]);
 
-        session(['registered_user_id' => $user->id]);//セッションに保存
+        session(['registered_user_id' => $user->id]);
     
         return redirect()->route('register.step2');
     }
 
     public function step2()
     {
-        return view('step2');//step2の画面を表示するだけ
+        return view('step2');
     }
 
     public function storeStep2(Step2Request $request)
     {
         $validated = $request->validated();
-
-        //セッションからユーザーIDを取得
         $userId = session('registered_user_id');
-        
 
-        WeightLog::create([
+        \Log::info('User ID from session:', ['user_id' => $userId]);
+
+        if ($userId){
+        
+            WeightLog::create([
             'user_id' => $userId,
             'weight' => $validated['weight'],
             'date' => now(),
-            'calories' => 0,
-            'exercise_time' => 0,
-            'exercise_content' => '',
+            'calories' => $validated['calories'] ?? 0,
+            'exercise_time' => $validated['exercise_time'] ?? 0,
+            'exercise_content' => $validated['exercise_content'] ?? '',
 
-        ]);
+            ]);
 
-        WeightTarget::create([
+            WeightTarget::create([
             'user_id' => $userId,
             'target_weight' => $validated['target_weight'],
-        ]);
+            ]);
 
-        session()->forget('registered_user_id');
+            session()->forget('registered_user_id');
 
-        return redirect()->route('weight_logs'); //体重管理画面へ遷移
+            return redirect()->route('weight_logs'); 
+
+        }else{
+
+            return redirect()->route('register.step1');
+        }
+        
+
     }
 
     public function admin()
@@ -78,13 +85,22 @@ class PiglyUserController extends Controller
 
     public function showAdminPage()
     {
-        $target_weight = auth()->user()->target_weight;
 
-        $latest_weight = auth()->user()->latest_weight;
+        if (auth()->check()){
 
-        $dates = auth()->user()->dates;
+            $target_weight = auth()->user()->target_weight;
 
-        return view('admin', compact('target_weight', 'latest_weight', 'dates'));
+            $latest_weight = auth()->user()->latest_weight;
+
+            $dates = auth()->user()->dates;
+
+            return view('admin', compact('target_weight', 'latest_weight', 'dates'));
+
+        }else{
+
+            return redirect()->route('login');
+        }
+        
     }
 
     public function showLoginForm()
@@ -126,13 +142,20 @@ class PiglyUserController extends Controller
 
     public function storeGoalSetting(GoalRequest $request)
     {
-        $validatedData = $request->validated();
+        if (auth()->check()){
 
-        $user = auth()->user();
-        $user->target_weight = $validatedData['target_weight'];
-        $user->save();
+            $validatedData = $request->validated();
 
-        return redirect()->route('weight_logs');
+            $user = auth()->user();
+            $user->target_weight = $validatedData['target_weight'];
+            $user->save();
+
+            return redirect()->route('weight_logs');
+
+        }else{
+
+            return redirect()->route('login');
+        }
         
     }
 

@@ -17,18 +17,16 @@ use Laravel\Fortify\Fortify;
 |
 */
 
-// 画面表示
+
 Route::get('/register/step1', [PiglyUserController::class, 'register'])->name('register.step1');
-// フォーム送信、データ保存
+
 Route::post('/register/step1', [PiglyUserController::class, 'storeStep1']);
 
-// 登録完了後、step2にリダイレクト
 Route::get('/register/step2', [PiglyUserController::class, 'step2'])->name('register.step2');
-// step2のフォーム送信、データ保存
+
 Route::post('/register/step2', [PiglyUserController::class, 'storeStep2']);
 
 
-//ログイン画面表示。Fortify がログインページを自動的に提供するので不要?
 Route::get('/login', [PiglyUserController::class, 'showLoginForm'])->name('login');
 
 Route::post('/login', [PiglyUserController::class, 'login'])->name('login');
@@ -36,7 +34,6 @@ Route::post('/login', [PiglyUserController::class, 'login'])->name('login');
 Route::get('/weight_logs/create', [PiglyUserController::class, 'add']);
 
 
-//体重管理画面
 Route::get('/weight_logs', [PiglyUserController::class, 'showAdminPage'])->name('weight_logs');
 
 Route::get('/weight_logs/{weightLogId}/edit', [PiglyUserController::class, 'edit'])->name('weight_logs.edit');
