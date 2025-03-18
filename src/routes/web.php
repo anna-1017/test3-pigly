@@ -43,8 +43,9 @@ Route::put('/weight_logs/{weightLogId}/update', [PiglyUserController::class, 'up
 Route::get('/weight_logs/search', [PiglyUserController::class, 'search']);
 
 
-//Route::middleware('auth')->group(function(){
+Route::middleware('auth')->group(function(){
     Route::get('/weight_logs/goal_setting',  [PiglyUserController::class, 'targetUpdate']);
     Route::post('/weight_logs/goal_setting', [PiglyUserController::class, 'storeGoalSetting']);
-//});
+    Route::post('/logout', [PiglyUserController::class, 'logout'])->name('logout');
+});
 

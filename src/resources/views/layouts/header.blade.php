@@ -22,13 +22,13 @@
         <div class="header-inner">
             <div class="header-logo">PiGLy</div>
             <nav class="header-nav">
-                <button class="target-setting" href="">
+                <a href="/weight_logs/goal_setting" class="target-setting" >
                     <img class="icon" src="/images/settings.icon.png" alt="歯車アイコン">
                     目標体重設定
-                </button>
+                </a>
                 <form action="/logout" class="form" method="post">
                     @csrf
-                    <button class="logout" href="">
+                    <button class="logout">
                     <img class="icon" src="/images/login_logout.icon.png" alt="ログアウトアイコン">
                     ログアウト
                 </button>

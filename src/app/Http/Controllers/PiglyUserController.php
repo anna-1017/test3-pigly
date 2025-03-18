@@ -32,12 +32,16 @@ class PiglyUserController extends Controller
         ]);
 
         session(['registered_user_id' => $user->id]);
+
+        \Log::info('Step1: Set registered_user_id in session', ['user_id' => session('registered_user_id')]);
     
         return redirect()->route('register.step2');
     }
 
     public function step2()
     {
+        \Log::info('Step2: Session user_id before displaying form', ['user_id' => session('registered_user_id')]);
+
         return view('step2');
     }
 
@@ -46,7 +50,7 @@ class PiglyUserController extends Controller
         $validated = $request->validated();
         $userId = session('registered_user_id');
 
-        \Log::info('User ID from session:', ['user_id' => $userId]);
+        \Log::info('Session user_id:', ['user_id' => $userId]);
 
         if ($userId){
         
@@ -65,7 +69,13 @@ class PiglyUserController extends Controller
             'target_weight' => $validated['target_weight'],
             ]);
 
+            Auth::loginUsingId($userId);
+            
+            \Log::info('User logged in manually', ['user_id' => $userId]);
+
             session()->forget('registered_user_id');
+
+            \Log::info('Redirecting to weight_logs', ['user_id' => $userId]);
 
             return redirect()->route('weight_logs'); 
 
@@ -85,6 +95,16 @@ class PiglyUserController extends Controller
 
     public function showAdminPage()
     {
+        \Log::info('Checking auth status', ['auth' => auth()->check()]);
+
+        $logs = WeightLog::latest()->paginate(10);
+
+        return view('admin', [
+            'logs' => $logs,
+            'target_weight' => 60,
+            'latest_weight' => 65,
+        ]);
+
 
         if (auth()->check()){
 
@@ -97,6 +117,8 @@ class PiglyUserController extends Controller
             return view('admin', compact('target_weight', 'latest_weight', 'dates'));
 
         }else{
+
+            \Log::info('Redirecting to login (auth check failed)');
 
             return redirect()->route('login');
         }
@@ -137,7 +159,11 @@ class PiglyUserController extends Controller
 
     public function targetUpdate()
     {
-        return view('goal');
+        if (auth()->check()){
+            return view('goal');
+        } else{
+            return redirect()->route('login');
+        }
     }
 
     public function storeGoalSetting(GoalRequest $request)
@@ -179,6 +205,15 @@ class PiglyUserController extends Controller
         $target_weight =50;
 
         return view('admin', compact('logs', 'count', 'start_date', 'end_date', 'target_weight', 'latest_weight'));
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 }
 

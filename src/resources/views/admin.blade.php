@@ -50,9 +50,9 @@
                     @endif
                 </form>
 
-                @if(request('start_date') || request('end_date'))
-                    <p>{{ request('start_date') }} ~ {{ request('end_date') }}の検索結果 {{ $logs->$count }} 件</p>
-                @endif
+                @if(isset($logs) && $logs->isNotEmpty() )
+                    <p>{{ request('start_date') }} ~ {{ request('end_date') }}の検索結果 {{ $logs->count() }} 件</p>
+                
 
 
                 <table>
@@ -76,9 +76,13 @@
                 </table>
             </div>
 
+            @if(isset($logs) && $logs->isNotEmpty())
             <div class="pagination">
                 {{$logs->links()}}
             </div>
+            @endif
+
+                @endif
         </div>
     </main>
 
