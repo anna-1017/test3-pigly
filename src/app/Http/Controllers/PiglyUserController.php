@@ -33,14 +33,12 @@ class PiglyUserController extends Controller
 
         session(['registered_user_id' => $user->id]);
 
-        \Log::info('Step1: Set registered_user_id in session', ['user_id' => session('registered_user_id')]);
     
         return redirect()->route('register.step2');
     }
 
     public function step2()
     {
-        \Log::info('Step2: Session user_id before displaying form', ['user_id' => session('registered_user_id')]);
 
         return view('step2');
     }
@@ -50,7 +48,6 @@ class PiglyUserController extends Controller
         $validated = $request->validated();
         $userId = session('registered_user_id');
 
-        \Log::info('Session user_id:', ['user_id' => $userId]);
 
         if ($userId){
         
@@ -71,11 +68,10 @@ class PiglyUserController extends Controller
 
             Auth::loginUsingId($userId);
             
-            \Log::info('User logged in manually', ['user_id' => $userId]);
+            
 
             session()->forget('registered_user_id');
 
-            \Log::info('Redirecting to weight_logs', ['user_id' => $userId]);
 
             return redirect()->route('weight_logs'); 
 
@@ -95,7 +91,6 @@ class PiglyUserController extends Controller
 
     public function showAdminPage()
     {
-        \Log::info('Checking auth status', ['auth' => auth()->check()]);
 
         $logs = WeightLog::latest()->paginate(10);
 
